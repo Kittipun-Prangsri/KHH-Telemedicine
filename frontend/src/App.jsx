@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { LayoutDashboard, ListChecks, Loader2, Database, ShieldCheck, HeartPulse, Settings2, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, ListChecks, Loader2, Database, ShieldCheck, HeartPulse, Settings2, FileText, LogOut, Menu, X } from "lucide-react";
 import Toast from "./components/Toast";
 import RecordModal from "./components/RecordModal";
 import ConfirmDelete from "./components/ConfirmDelete";
@@ -22,6 +22,7 @@ export default function App() {
   const [editRecord, setEditRecord] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toast, setToast] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const showToast = useCallback((msg, type = "success") => {
     setToast({ msg, type });
@@ -117,6 +118,103 @@ export default function App() {
     );
   }
 
+  const renderSidebar = (isMobile = false) => (
+    <div className="flex flex-col justify-between h-full bg-slate-900 text-slate-300 select-none">
+      <div>
+        {/* Logo Brand Header */}
+        <div className="p-6 border-b border-slate-800/60 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-teal-500/10 p-2 rounded-xl border border-teal-500/20 text-teal-400">
+              <HeartPulse size={24} className="stroke-[2.2]" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-white tracking-wide uppercase">KHH Telemedicine</h1>
+              <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mt-0.5">ระบบติดตามการจัดส่งยา</p>
+            </div>
+          </div>
+          {isMobile && (
+            <button 
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="p-4 space-y-1.5">
+          <button 
+            onClick={() => { setTab("dashboard"); if (isMobile) setMobileMenuOpen(false); }} 
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+              tab === "dashboard" 
+                ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
+                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+            }`}
+          >
+            <LayoutDashboard size={18} className="stroke-[2]" />
+            ภาพรวมระบบ
+          </button>
+          
+          <button 
+            onClick={() => { setTab("records"); if (isMobile) setMobileMenuOpen(false); }} 
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+              tab === "records" 
+                ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
+                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+            }`}
+          >
+            <ListChecks size={18} className="stroke-[2]" />
+            จัดการข้อมูลผู้ป่วย
+          </button>
+
+          <button 
+            onClick={() => { setTab("reports"); if (isMobile) setMobileMenuOpen(false); }} 
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+              tab === "reports" 
+                ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
+                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+            }`}
+          >
+            <FileText size={18} className="stroke-[2]" />
+            พิมพ์รายงาน PDF
+          </button>
+
+          <button 
+            onClick={() => { setTab("settings"); if (isMobile) setMobileMenuOpen(false); }} 
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+              tab === "settings" 
+                ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
+                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+            }`}
+          >
+            <Settings2 size={18} className="stroke-[2]" />
+            การตั้งค่าระบบ
+          </button>
+        </nav>
+      </div>
+
+      {/* Database Status footer indicators */}
+      <div className="p-4 border-t border-slate-800/60 space-y-3 bg-slate-950/20">
+        <div className="flex items-center justify-between text-xs bg-slate-800/40 border border-slate-800/40 rounded-xl p-3">
+          <div className="flex items-center gap-2">
+            <Database size={14} className="text-teal-400" />
+            <span className="font-semibold text-slate-400 text-[11px]">Database Cloud</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-bold text-[10px] text-emerald-400 uppercase">Live</span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2 text-[10px] text-slate-500 font-semibold px-1">
+          <ShieldCheck size={12} />
+          <span>KHH Primary Care Platform v1.1</span>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-slate-50 min-h-screen flex text-slate-800 antialiased overflow-hidden">
       <Toast toast={toast} />
@@ -145,112 +243,54 @@ export default function App() {
         />
       )}
 
-      {/* Modern Left Sidebar Navigation */}
-      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800 shrink-0 h-screen select-none">
-        <div>
-          {/* Logo Brand Header */}
-          <div className="p-6 border-b border-slate-800/60 flex items-center gap-3">
-            <div className="bg-teal-500/10 p-2 rounded-xl border border-teal-500/20 text-teal-400">
-              <HeartPulse size={24} className="stroke-[2.2]" />
-            </div>
-            <div>
-              <h1 className="text-sm font-bold text-white tracking-wide uppercase">KHH Telemedicine</h1>
-              <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mt-0.5">ระบบติดตามการจัดส่งยา</p>
-            </div>
-          </div>
-
-          {/* Navigation Menu */}
-          <nav className="p-4 space-y-1.5">
-            <button 
-              onClick={() => setTab("dashboard")} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                tab === "dashboard" 
-                  ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-              }`}
-            >
-              <LayoutDashboard size={18} className="stroke-[2]" />
-              ภาพรวมระบบ
-            </button>
-            
-            <button 
-              onClick={() => setTab("records")} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                tab === "records" 
-                  ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-              }`}
-            >
-              <ListChecks size={18} className="stroke-[2]" />
-              จัดการข้อมูลผู้ป่วย
-            </button>
-
-            <button 
-              onClick={() => setTab("reports")} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                tab === "reports" 
-                  ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-              }`}
-            >
-              <FileText size={18} className="stroke-[2]" />
-              พิมพ์รายงาน PDF
-            </button>
-
-            <button 
-              onClick={() => setTab("settings")} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                tab === "settings" 
-                  ? "bg-teal-600 text-white shadow-lg shadow-teal-900/10" 
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-              }`}
-            >
-              <Settings2 size={18} className="stroke-[2]" />
-              การตั้งค่าระบบ
-            </button>
-          </nav>
-        </div>
-
-        {/* Database Status footer indicators */}
-        <div className="p-4 border-t border-slate-800/60 space-y-3 bg-slate-950/20">
-          <div className="flex items-center justify-between text-xs bg-slate-800/40 border border-slate-800/40 rounded-xl p-3">
-            <div className="flex items-center gap-2">
-              <Database size={14} className="text-teal-400" />
-              <span className="font-semibold text-slate-400 text-[11px]">Database Cloud</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-[10px] text-emerald-400 uppercase">Live</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2 text-[10px] text-slate-500 font-semibold px-1">
-            <ShieldCheck size={12} />
-            <span>KHH Primary Care Platform v1.1</span>
-          </div>
-        </div>
+      {/* Modern Left Sidebar Navigation for Desktop */}
+      <aside className="hidden lg:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0 h-screen select-none">
+        {renderSidebar(false)}
       </aside>
+
+      {/* Mobile Menu Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden transition-all duration-300"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar Navigation Drawer */}
+      <div className={`fixed inset-y-0 left-0 w-64 bg-slate-900 border-r border-slate-800 z-50 transform transition-transform duration-300 lg:hidden ${
+        mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      }`}>
+        {renderSidebar(true)}
+      </div>
 
       {/* Main Fluid Right Container Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Modern Top Minimal Header */}
-        <header className="bg-white border-b border-slate-200/80 px-8 py-4.5 flex items-center justify-between shadow-sm shrink-0">
+        <header className="bg-white border-b border-slate-200/80 px-4 py-3 lg:px-8 lg:py-4.5 flex items-center justify-between shadow-sm shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200/50 px-2.5 py-1 rounded-md">
+            <button 
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 -ml-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 lg:hidden transition-colors cursor-pointer"
+              title="เปิดเมนู"
+            >
+              <Menu size={20} className="stroke-[2.2]" />
+            </button>
+            
+            <span className="hidden sm:inline-flex text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200/50 px-2.5 py-1 rounded-md">
               เครือข่ายบริการปฐมภูมิ
             </span>
-            <span className="text-xs text-slate-400 font-medium">|</span>
-            <span className="text-xs text-slate-500 font-medium">
-              โรงพยาบาลคลองหาด (KHH)
+            <span className="hidden sm:inline text-xs text-slate-400 font-medium">|</span>
+            <span className="text-xs text-slate-500 font-semibold truncate max-w-[120px] sm:max-w-none">
+              รพ.คลองหาด (KHH)
             </span>
           </div>
           
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-xl">
-              <div className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center text-[10px] font-bold uppercase">
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-2.5 py-1 rounded-xl">
+              <div className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center text-[10px] font-bold uppercase shrink-0">
                 {user?.providerId?.slice(0, 3) || 'KHH'}
               </div>
-              <span className="text-xs font-bold text-slate-700">{user?.name} ({user?.providerId})</span>
+              <span className="text-xs font-bold text-slate-700 truncate max-w-[80px] sm:max-w-none">{user?.name}</span>
             </div>
             <button
               onClick={signOut}
@@ -258,13 +298,13 @@ export default function App() {
               title="ออกจากระบบ"
             >
               <LogOut size={13} />
-              <span>ออก</span>
+              <span className="hidden sm:inline">ออก</span>
             </button>
           </div>
         </header>
 
         {/* Dynamic Page Scroll Content */}
-        <main className="flex-1 overflow-y-auto px-8 py-6">
+        <main className="flex-1 overflow-y-auto px-4 py-4 lg:px-8 lg:py-6">
           {tab === "dashboard" ? (
             <Dashboard records={records} />
           ) : tab === "records" ? (

@@ -66,22 +66,22 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
       </div>
 
       {/* Filter and Search Action Bar */}
-      <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[240px]">
-          <Search size={16} className="absolute left-3 top-3 text-slate-400" />
+      <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="relative flex-1 w-full">
+          <Search size={16} className="absolute left-3 top-3.5 text-slate-400" />
           <input 
             value={search} 
             onChange={e => { setSearch(e.target.value); setPage(1); }} 
             placeholder="ค้นหารหัส HN หรือชื่อ-นามสกุล..." 
-            className={`${inputCls} pl-9 w-full`} 
+            className={`${inputCls} pl-9 py-2.5 w-full`} 
           />
         </div>
         
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
           <select 
             value={filterFacility} 
             onChange={e => { setFilterFacility(e.target.value); setPage(1); }} 
-            className={`${inputCls} min-w-[150px]`}
+            className={`${inputCls} py-2.5 flex-1 sm:flex-initial sm:min-w-[170px]`}
           >
             <option value="">ทุกหน่วยงานปฐมภูมิ</option>
             {FACILITIES.map(f => <option key={f} value={f}>{f}</option>)}
@@ -90,7 +90,7 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
           <select 
             value={filterStatus} 
             onChange={e => { setFilterStatus(e.target.value); setPage(1); }} 
-            className={`${inputCls} min-w-[150px]`}
+            className={`${inputCls} py-2.5 flex-1 sm:flex-initial sm:min-w-[170px]`}
           >
             <option value="">ทุกสถานะจัดส่ง</option>
             <option value="ordered">รอจัดส่งยา</option>
@@ -102,7 +102,7 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
           {(search || filterFacility || filterStatus) && (
             <button 
               onClick={() => { setSearch(""); setFilterFacility(""); setFilterStatus(""); setPage(1); }}
-              className="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1.5 rounded hover:bg-rose-50 transition-colors"
+              className="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-2 rounded hover:bg-rose-50 transition-colors text-center shrink-0"
             >
               ล้างตัวกรอง
             </button>
@@ -110,9 +110,11 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
         </div>
       </div>
 
-      {/* Main Table Grid Container */}
+      {/* Main Table/Card Grid Container */}
       <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between min-h-[400px]">
-        <div className="overflow-x-auto w-full">
+        
+        {/* 1. Desktop Table View (lg screen and up) */}
+        <div className="hidden lg:block overflow-x-auto w-full">
           <table className="w-full text-sm text-left border-collapse">
             <thead className="bg-slate-50/75 border-b border-slate-200 text-slate-500 font-semibold text-xs tracking-wider uppercase">
               <tr>
@@ -191,6 +193,92 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* 2. Mobile/Tablet Card Grid View (Below lg screen) */}
+        <div className="lg:hidden p-4">
+          {pageRows.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {pageRows.map(r => {
+                const s = getStatus(r);
+                const Icon = s.icon;
+                return (
+                  <div 
+                    key={r.id} 
+                    onClick={() => setSelectedPatient(r)}
+                    className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4"
+                  >
+                    {/* Header: Name and HN */}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-slate-800 text-sm">{r.name}</h4>
+                        <p className="text-[10px] font-mono font-bold text-slate-400 mt-0.5">HN: {r.hn}</p>
+                      </div>
+                      <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold border ${s.cls}`}>
+                        <Icon size={10} className="stroke-[2.5]" />
+                        {s.label}
+                      </span>
+                    </div>
+
+                    {/* Clinic Tags & Rights */}
+                    <div className="flex flex-wrap gap-1">
+                      {(r.clinicTags || []).map(c => (
+                        <span key={c} className="text-[9px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200/40">
+                          {c}
+                        </span>
+                      ))}
+                      {r.rights && (
+                        <span className="text-[9px] font-bold bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded border border-teal-200/20">
+                          {r.rights}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Body: Risk & Facility info */}
+                    <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-[11px] text-slate-500 font-medium">
+                      <div>
+                        <span className="text-[9px] text-slate-400 font-bold block uppercase">หน่วยปฐมภูมิ</span>
+                        <span className="text-slate-700 font-semibold mt-0.5 block truncate">{r.facility || "-"}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-slate-400 font-bold block uppercase">ความเสี่ยง (BP / FBS)</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className={`w-2 h-2 rounded-full ${riskDot(r.bp)}`} title={`BP: ${r.bp}`} />
+                          <span className="text-[9px] text-slate-400 font-bold">BP</span>
+                          <span className={`w-2 h-2 rounded-full ${riskDot(r.fbs)}`} title={`FBS: ${r.fbs}`} />
+                          <span className="text-[9px] text-slate-400 font-bold">FBS</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Next Appointment & Actions */}
+                    <div className="flex justify-between items-center pt-2.5 border-t border-slate-100">
+                      <div>
+                        <span className="text-[9px] text-slate-400 font-bold block uppercase">นัดครั้งต่อไป</span>
+                        <span className="text-[11px] text-slate-600 font-semibold mt-0.5 block">{fmtThaiDate(r.nextAppt)}</span>
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex gap-1.5">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); onEditClick(r); }} 
+                          className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg border border-slate-200 hover:border-teal-200/50 transition-all duration-200 bg-white"
+                        >
+                          <Pencil size={13} />
+                        </button>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); onDeleteClick(r); }} 
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-200 hover:border-rose-200/50 transition-all duration-200 bg-white"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
         
         {!pageRows.length && (

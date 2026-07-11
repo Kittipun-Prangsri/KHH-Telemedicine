@@ -49,12 +49,12 @@ export default function Dashboard({ records }) {
   return (
     <div className="space-y-6 w-full animate-fadeIn">
       {/* Page Header */}
-      <div className="flex items-center justify-between pb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
         <div>
           <h2 className="text-xl font-bold text-slate-800">ภาพรวมระบบ (Dashboard)</h2>
           <p className="text-xs text-slate-500 mt-0.5">ภาพรวมการให้บริการและสถานะจัดส่งยาของหน่วยปฐมภูมิ</p>
         </div>
-        <div className="text-xs text-slate-400 font-semibold bg-slate-100/60 px-3 py-1.5 rounded-lg border border-slate-200/50">
+        <div className="text-xs text-slate-400 font-semibold bg-slate-100/60 px-3 py-1.5 rounded-lg border border-slate-200/50 self-start sm:self-auto">
           อัปเดตล่าสุด: {new Date().toLocaleDateString('th-TH', { hour: '2-digit', minute: '2-digit' })} น.
         </div>
       </div>

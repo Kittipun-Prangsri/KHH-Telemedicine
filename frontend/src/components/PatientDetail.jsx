@@ -268,19 +268,21 @@ export default function PatientDetail({ patient, onBack }) {
             <ArrowLeft size={18} />
           </button>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-xl font-bold text-slate-800">{patient.name || "ไม่ระบุชื่อ"}</h2>
               <span className={`inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full font-semibold border ${statusInfo.cls}`}>
                 <statusInfo.icon size={11} />
                 {statusInfo.label}
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-1 font-semibold flex items-center gap-1.5">
+            <p className="text-xs text-slate-500 mt-1.5 font-semibold flex flex-wrap items-center gap-1.5">
               <User size={13} className="text-slate-400" />
-              เลขประจำตัวผู้ป่วย (HN): <span className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded text-[11px] font-bold">{patient.hn || "-"}</span>
-              <span className="text-slate-300">|</span>
+              <span>HN:</span> 
+              <span className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded text-[11px] font-bold">{patient.hn || "-"}</span>
+              <span className="hidden sm:inline text-slate-300">|</span>
               <MapPin size={13} className="text-slate-400" />
-              หน่วยดูแล: <span className="text-slate-700 font-bold">{patient.facility || "ไม่ระบุ"}</span>
+              <span>หน่วยดูแล:</span>
+              <span className="text-slate-700 font-bold">{patient.facility || "ไม่ระบุ"}</span>
             </p>
           </div>
         </div>

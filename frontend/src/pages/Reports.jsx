@@ -194,7 +194,7 @@ export default function Reports({ records }) {
         </div>
 
         {/* สรุปสถิติด้านล่างเอกสาร */}
-        <div className="pt-4 border-t border-slate-100 grid grid-cols-4 gap-4 text-center">
+        <div className="pt-4 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div className="bg-slate-50 border border-slate-200/50 rounded-xl p-2.5">
             <p className="text-[10px] font-bold text-slate-500 uppercase">รอจัดส่งยา</p>
             <p className="text-base font-extrabold text-slate-700">{stats.ordered} ราย</p>
@@ -214,14 +214,14 @@ export default function Reports({ records }) {
         </div>
 
         {/* ส่วนลงชื่อของเจ้าหน้าที่ท้ายรายงาน */}
-        <div className="pt-12 grid grid-cols-2 text-xs font-semibold text-slate-500">
+        <div className="pt-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 text-xs font-semibold text-slate-500">
           <div>
             <p>พิมพ์โดย: _____________________________________</p>
             <p className="mt-1.5 ml-12">( เจ้าหน้าที่ผู้ปฏิบัติงานจัดส่งยา )</p>
           </div>
-          <div className="text-right pr-6">
+          <div className="text-left md:text-right pr-6">
             <p>ตรวจทานโดย: _____________________________________</p>
-            <p className="mt-1.5 ml-12 text-center">( หัวหน้ากลุ่มงานเภสัชกรรม / ผู้ตรวจสอบ )</p>
+            <p className="mt-1.5 ml-12 md:text-center md:inline-block">( หัวหน้ากลุ่มงานเภสัชกรรม / ผู้ตรวจสอบ )</p>
           </div>
         </div>
       </div>

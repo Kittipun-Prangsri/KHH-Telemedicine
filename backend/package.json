@@ -2,10 +2,10 @@
   "name": "khh-telemedicine-backend",
   "version": "1.0.0",
   "description": "KHH Telemedicine Backend API",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.0",

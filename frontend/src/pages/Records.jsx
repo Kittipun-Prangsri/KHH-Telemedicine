@@ -5,6 +5,7 @@ import {
 import * as XLSX from "xlsx";
 import { FACILITIES } from "../constants";
 import { getStatus, fmtThaiDate, riskDot, mapImportedRow } from "../utils";
+import PatientDetail from "../components/PatientDetail";
 
 const inputCls = "border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all duration-200";
 
@@ -13,6 +14,7 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
   const [filterFacility, setFilterFacility] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const PAGE_SIZE = 12; // Increased size because of full-screen layout
 
   const filtered = useMemo(() => {
@@ -29,6 +31,15 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  if (selectedPatient) {
+    return (
+      <PatientDetail 
+        patient={selectedPatient} 
+        onBack={() => setSelectedPatient(null)} 
+      />
+    );
+  }
 
   return (
     <div className="space-y-5 w-full animate-fadeIn">
@@ -121,7 +132,11 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
                 const s = getStatus(r);
                 const Icon = s.icon;
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <tr 
+                    key={r.id} 
+                    onClick={() => setSelectedPatient(r)}
+                    className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                  >
                     <td className="px-5 py-3.5 font-mono text-xs text-slate-500 font-bold">{r.hn}</td>
                     <td className="px-5 py-3.5 font-semibold text-slate-800">{r.name}</td>
                     <td className="px-5 py-3.5">
@@ -158,13 +173,13 @@ export default function Records({ records, onAddClick, onEditClick, onDeleteClic
                     <td className="px-5 py-3.5">
                       <div className="flex justify-end gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity duration-200">
                         <button 
-                          onClick={() => onEditClick(r)} 
+                          onClick={(e) => { e.stopPropagation(); onEditClick(r); }} 
                           className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg border border-transparent hover:border-teal-200/50 transition-all duration-200"
                         >
                           <Pencil size={14} />
                         </button>
                         <button 
-                          onClick={() => onDeleteClick(r)} 
+                          onClick={(e) => { e.stopPropagation(); onDeleteClick(r); }} 
                           className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-transparent hover:border-rose-200/50 transition-all duration-200"
                         >
                           <Trash2 size={14} />

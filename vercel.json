@@ -1,8 +1,27 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://your-backend-api-url.onrender.com/api/:path*"
-    }
-  ]
+    "services": {
+        "frontend": {
+            "root": "frontend",
+            "framework": "vite"
+        },
+        "backend": {
+            "root": "backend"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api(/.*)?",
+            "destination": {
+                "type": "service",
+                "service": "backend"
+            }
+        },
+        {
+            "source": "/(.*)",
+            "destination": {
+                "type": "service",
+                "service": "frontend"
+            }
+        }
+    ]
 }
